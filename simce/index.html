@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informes SIMCE para colegios</title>
+<meta name="description" content="Me mandas las planillas de tus ensayos SIMCE y te devuelvo un informe en PDF para la UTP, curso por curso y niño por niño.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hoja:#f8fbfe; --cuadro:#d5e4f1; --tinta:#1b2a4a; --tinta-suave:#4a5a78;
+  --rojo:#c9271f; --verde:#17795a; --gris:#9aa7bd; --destacador:#ffe45c; --blanco:#fff;
+  --cuadro-tam:24px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; color:var(--tinta); background-color:var(--hoja);
+  background-image:linear-gradient(var(--cuadro) 1px,transparent 1px),linear-gradient(90deg,var(--cuadro) 1px,transparent 1px);
+  background-size:var(--cuadro-tam) var(--cuadro-tam);
+  font:400 1.125rem/1.6 "Atkinson Hyperlegible",system-ui,sans-serif;
+}
+.pagina{max-width:1080px;margin:0 auto;padding:0 16px}
+h1,h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;line-height:1.08;letter-spacing:-.015em;margin:0}
+h1{font-size:clamp(2.5rem,6.4vw,4.5rem)}
+h2{font-size:clamp(1.75rem,3.6vw,2.5rem);margin-bottom:.6em}
+p{margin:0 0 1em;max-width:62ch}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--rojo);outline-offset:3px}
+
+.portada{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:72px 0 64px}
+.bajada{font-size:1.3125rem;line-height:1.5;margin-top:24px}
+.boton{display:inline-block;margin-top:12px;padding:15px 24px;background:var(--tinta);color:var(--blanco);font-weight:700;text-decoration:none;border-radius:3px;overflow-wrap:anywhere}
+.boton:hover{background:var(--rojo)}
+
+.prueba{background:var(--blanco);border:2px solid var(--tinta);padding:24px;box-shadow:7px 7px 0 var(--tinta)}
+.prueba h2{font-size:1.375rem;margin-bottom:.35em}
+.prueba>p{font-size:1rem;margin-bottom:16px;color:var(--tinta-suave)}
+.cambiar{display:flex;gap:0;margin-bottom:22px;border:2px solid var(--tinta)}
+.cambiar button{flex:1;padding:11px 8px;border:0;background:var(--blanco);color:var(--tinta);font:700 .9375rem/1.25 "Atkinson Hyperlegible",sans-serif;cursor:pointer}
+.cambiar button[aria-pressed="true"]{background:var(--tinta);color:var(--blanco)}
+.barra{display:grid;grid-template-columns:96px 1fr 52px;align-items:center;gap:10px;margin-bottom:12px;font-size:1rem}
+.riel{height:26px;background:#e9eff6}
+.relleno{display:block;height:100%;background:var(--gris);transition:width .45s ease,background-color .45s ease}
+.corregido .relleno{background:var(--verde)}
+.valor{font-weight:700;text-align:right}
+.rindieron{display:block;grid-column:2/4;margin-top:-9px;font-size:.875rem;color:var(--tinta-suave)}
+.nota{font:600 2.125rem/1.1 "Caveat",cursive;color:var(--rojo);margin:18px 0 6px;min-height:2.2em;max-width:none}
+.aviso{font-size:.875rem;color:var(--tinta-suave);margin:0}
+
+section{padding:48px 0}
+.claro{background:var(--hoja);border:2px solid var(--tinta);padding:40px;margin-bottom:40px}
+.recibes{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.recibes ul{margin:0;padding:0;list-style:none}
+.recibes li{padding:14px 0;border-bottom:1px solid var(--cuadro)}
+.recibes li:last-child{border-bottom:0}
+.recibes strong{display:block}
+.fila-nino{display:grid;grid-template-columns:82px 1fr 44px;gap:8px;align-items:center;font-size:.9375rem;margin-bottom:10px}
+.tramo{position:relative;height:14px}
+.tramo i{position:absolute;top:6px;height:2px;background:var(--tinta)}
+.tramo b{position:absolute;top:1px;width:12px;height:12px;border-radius:50%;border:2px solid var(--tinta);background:var(--blanco);margin-left:-6px}
+.tramo b.fin{background:var(--tinta)}
+.sube{color:var(--verde);font-weight:700;text-align:right}
+.baja{color:var(--rojo);font-weight:700;text-align:right}
+.leyenda{font-size:.9375rem;color:var(--tinta-suave);margin-top:14px}
+
+.pasos{counter-reset:paso;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.pasos li{counter-increment:paso}
+.pasos li::before{content:counter(paso);display:block;font:600 2.75rem/1 "Caveat",cursive;color:var(--rojo);margin-bottom:6px}
+.pasos strong{display:block;margin-bottom:4px}
+
+.quien{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+mark{background:var(--destacador);color:inherit;padding:0 3px}
+.final{padding:32px 0 88px}
+footer{padding-bottom:40px;font-size:.9375rem;color:var(--tinta-suave)}
+
+@media (max-width:820px){
+  .portada,.recibes,.quien{grid-template-columns:1fr;gap:32px}
+  .portada{padding:40px 0 32px}
+  .pasos{grid-template-columns:1fr;gap:20px}
+  .claro{padding:24px 18px}
+  .prueba{padding:18px;box-shadow:5px 5px 0 var(--tinta)}
+  .barra{grid-template-columns:82px 1fr 46px}
+  .bajada{font-size:1.1875rem}
+}
+@media (prefers-reduced-motion:reduce){.relleno{transition:none}}
+</style>
+</head>
+<body>
+<div class="pagina">
+
+<header class="portada">
+  <div>
+    <h1>Tus ensayos SIMCE, explicados curso por curso y niño por niño</h1>
+    <p class="bajada">Me mandas las planillas de Excel y te devuelvo un informe en PDF para la UTP: qué avanzó, qué no, qué alumnos necesitan apoyo y qué hacer antes de la prueba.</p>
+    <p class="bajada"><mark>El informe de tu primer curso es gratis.</mark></p>
+    <a class="boton" href="mailto:claudioesteffan@gmail.com?subject=Informe%20SIMCE%20para%20mi%20colegio">Escribir a claudioesteffan@gmail.com</a>
+  </div>
+
+  <aside class="prueba" id="prueba" aria-labelledby="prueba-titulo">
+    <h2 id="prueba-titulo">¿Bajó el curso o faltaron niños?</h2>
+    <p>El mismo 4° básico, sumado de dos formas.</p>
+    <div class="cambiar" role="group" aria-label="Forma de calcular el logro">
+      <button type="button" id="b-planilla" aria-pressed="false">Como sale en la planilla</button>
+      <button type="button" id="b-real" aria-pressed="true">Sólo quienes rindieron</button>
+    </div>
+    <div id="barras" class="corregido">
+      <div class="barra"><span>Diagnóstico</span><span class="riel"><span class="relleno" data-p="58" data-r="58"></span></span><span class="valor"></span><span class="rindieron">Rindieron 30 de 30</span></div>
+      <div class="barra"><span>Ensayo 3</span><span class="riel"><span class="relleno" data-p="58" data-r="62"></span></span><span class="valor"></span><span class="rindieron">Rindieron 28 de 30</span></div>
+      <div class="barra"><span>Ensayo 4</span><span class="riel"><span class="relleno" data-p="51" data-r="66"></span></span><span class="valor"></span><span class="rindieron">Rindieron 23 de 30</span></div>
+    </div>
+    <p class="nota" id="nota" aria-live="polite"></p>
+    <p class="aviso">Ejemplo con datos inventados.</p>
+  </aside>
+</header>
+
+<section class="claro" aria-labelledby="t-por-que">
+  <h2 id="t-por-que">Dos errores que cambian lo que crees de tu curso</h2>
+  <p><strong>El ausente cuenta como cero.</strong> La planilla divide por toda la lista, así que un niño que faltó baja el promedio igual que uno que respondió todo mal. Si ese día faltaron siete, parece que el curso retrocedió. En el informe, el logro se calcula con quienes rindieron, y la cifra de la planilla queda al lado para que la compares.</p>
+  <p><strong>El número de lista cambia.</strong> Cuando llegan o se van alumnos, la lista se renumera y el N° 14 de septiembre ya no es el N° 14 de octubre. Yo sigo a cada niño por su nombre, y la nómina la confirmo contigo antes de calcular nada.</p>
+</section>
+
+<section class="recibes" aria-labelledby="t-recibes">
+  <div>
+    <h2 id="t-recibes">Lo que recibes</h2>
+    <ul>
+      <li><strong>Cómo va cada curso</strong>Lectura y Matemática, de un ensayo al siguiente.</li>
+      <li><strong>Qué contenidos avanzan y cuáles no</strong>Por eje y por habilidad, con la clasificación de tu tabla de especificaciones.</li>
+      <li><strong>Las preguntas que nadie está entendiendo</strong>Un niño que marca sin leer igual le achunta a 1 de cada 4. Si un curso acierta menos que eso, hay algo que revisar.</li>
+      <li><strong>Recomendaciones para la UTP</strong>Qué reforzar y cómo, escrito como un colega le explica a otro.</li>
+    </ul>
+  </div>
+  <div class="prueba" style="box-shadow:none">
+    <h2>Una fila por niño</h2>
+    <p>Del primer ensayo (punto vacío) al último (punto lleno), de quien más sube a quien más baja.</p>
+    <div class="fila-nino"><span>Alumno A</span><span class="tramo"><i style="left:30%;width:42%"></i><b style="left:30%"></b><b class="fin" style="left:72%"></b></span><span class="sube">+21</span></div>
+    <div class="fila-nino"><span>Alumno B</span><span class="tramo"><i style="left:44%;width:24%"></i><b style="left:44%"></b><b class="fin" style="left:68%"></b></span><span class="sube">+12</span></div>
+    <div class="fila-nino"><span>Alumno C</span><span class="tramo"><i style="left:60%;width:10%"></i><b style="left:60%"></b><b class="fin" style="left:70%"></b></span><span class="sube">+5</span></div>
+    <div class="fila-nino"><span>Alumno D</span><span class="tramo"><i style="left:52%;width:8%"></i><b class="fin" style="left:52%"></b><b style="left:60%"></b></span><span class="baja">−4</span></div>
+    <div class="fila-nino"><span>Alumno E</span><span class="tramo"><i style="left:38%;width:26%"></i><b class="fin" style="left:38%"></b><b style="left:64%"></b></span><span class="baja">−13</span></div>
+    <p class="leyenda">Ejemplo con datos inventados.</p>
+  </div>
+</section>
+
+<section aria-labelledby="t-como">
+  <h2 id="t-como">Cómo funciona</h2>
+  <ol class="pasos">
+    <li><strong>Me mandas tus planillas</strong>Las de cada ensayo, por curso, y la tabla de especificaciones si la tienes.</li>
+    <li><strong>Revisamos la nómina</strong>Te pregunto quién se retiró y quién llegó. Así cada cifra parte de la lista real.</li>
+    <li><strong>Recibes el informe en PDF</strong>Listo para leerlo en la reunión de profesores, sin tener que explicar fórmulas.</li>
+  </ol>
+</section>
+
+<section class="quien" aria-labelledby="t-quien">
+  <div>
+    <h2 id="t-quien">Quién hace esto</h2>
+    <p>Soy Claudio Esteffan. Programo herramientas y tengo tres apps publicadas en la App Store. Estos informes nacieron trabajando con la jefa de UTP de una escuela básica, con ensayos reales de 2° básico (Lectura) y 4° básico (Lectura y Matemática).</p>
+  </div>
+  <div>
+    <h2>Los datos de tus alumnos</h2>
+    <p>Las planillas tienen nombres de niños. <mark>Las uso sólo para hacer tu informe</mark>, no las comparto con nadie y nunca aparecen en mis publicaciones.</p>
+    <p>¿Tus planillas tienen otro formato? Mándame una y te digo si se puede.</p>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="t-final">
+  <h2 id="t-final">Prueba con un curso, sin costo</h2>
+  <p>Me mandas las planillas de un curso y te entrego su informe gratis. Si le sirve a tu UTP, conversamos sobre los demás cursos y te digo cuánto cuesta.</p>
+  <a class="boton" href="mailto:claudioesteffan@gmail.com?subject=Informe%20SIMCE%20para%20mi%20colegio">Escribir a claudioesteffan@gmail.com</a>
+</section>
+
+<footer><a href="../">Claudio Esteffan</a>. Informes SIMCE para colegios de Chile.</footer>
+</div>
+
+<script>
+(function () {
+  var barras = document.getElementById('barras');
+  var nota = document.getElementById('nota');
+  var bPlanilla = document.getElementById('b-planilla');
+  var bReal = document.getElementById('b-real');
+  var NOTAS = {
+    p: 'Bajó 7 puntos. ¿Qué pasó en el Ensayo 4?',
+    r: 'Faltaron 7 niños ese día. El curso subió.'
+  };
+  function mostrar(modo) {
+    barras.classList.toggle('corregido', modo === 'r');
+    bPlanilla.setAttribute('aria-pressed', String(modo === 'p'));
+    bReal.setAttribute('aria-pressed', String(modo === 'r'));
+    barras.querySelectorAll('.barra').forEach(function (f) {
+      var r = f.querySelector('.relleno');
+      var v = r.dataset[modo];
+      r.style.width = v + '%';
+      f.querySelector('.valor').textContent = v + '%';
+    });
+    nota.textContent = NOTAS[modo];
+  }
+  bPlanilla.addEventListener('click', function () { mostrar('p'); });
+  bReal.addEventListener('click', function () { mostrar('r'); });
+  mostrar('p');
+})();
+</script>
+</body>
+</html>

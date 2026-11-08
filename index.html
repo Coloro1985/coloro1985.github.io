@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claudio Esteffan</title>
+<meta name="description" content="Hago apps y programas a medida, y automatizo el trabajo que hoy se hace a mano. Tres apps publicadas en la App Store.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noche:#0b0b0f; --panel:#17171d; --linea:#2c2c35; --texto:#f4f4f6; --suave:#b5b5bf;
+  --papel:#e9ebee; --tinta:#121216; --tinta-suave:#4d4d58; --linea-clara:#c9ccd2; --amarillo:#f5c84c;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--noche);color:var(--texto);font:400 1.125rem/1.6 "Atkinson Hyperlegible",system-ui,sans-serif;overflow-x:hidden}
+.ancho{max-width:1160px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;margin:0;line-height:1.05;letter-spacing:-.022em}
+h1{font-size:clamp(2.75rem,6.3vw,5.25rem)}
+h2{font-size:clamp(2.125rem,4.6vw,3.5rem);margin-bottom:36px}
+h3{font-size:1.5rem;font-weight:500;letter-spacing:-.01em;line-height:1.2}
+p{margin:0 0 1em;max-width:58ch}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--amarillo);outline-offset:3px}
+.claro{background:var(--papel);color:var(--tinta)}
+.claro :focus-visible{outline-color:var(--tinta)}
+section{padding:88px 0}
+
+/* Barra fija */
+.barra-sup{position:fixed;inset:0 0 auto 0;z-index:10;background:rgba(11,11,15,.92);border-bottom:1px solid var(--linea)}
+.barra-sup .ancho{display:flex;align-items:center;gap:32px;height:64px}
+.marca{font:700 1.125rem/1 "Bricolage Grotesque",sans-serif;text-decoration:none;margin-right:auto;display:flex;align-items:center;gap:10px}
+.marca i{width:14px;height:14px;background:var(--amarillo);box-shadow:5px 5px 0 #6e5a22;display:block}
+.barra-sup a.nav{text-decoration:none;color:var(--suave);font-size:1rem}
+.barra-sup a.nav:hover{color:var(--texto)}
+.boton{display:inline-block;padding:14px 22px;background:var(--amarillo);color:#000;font-weight:700;text-decoration:none;box-shadow:4px 4px 0 #6e5a22;transition:transform .1s steps(2),box-shadow .1s steps(2)}
+.boton:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 #6e5a22}
+.boton:active{transform:translate(4px,4px);box-shadow:0 0 0 #6e5a22}
+.barra-sup .boton{padding:9px 16px;font-size:1rem}
+.oscuro-btn{background:#000;color:#fff;box-shadow:4px 4px 0 #8f7426}
+.oscuro-btn:hover{box-shadow:2px 2px 0 #8f7426}
+.oscuro-btn:active{box-shadow:0 0 0 #8f7426}
+
+/* Portada */
+.portada{display:grid;grid-template-columns:1.2fr .8fr;gap:64px;align-items:center;padding:152px 0 88px}
+.bajada{font-size:1.3125rem;line-height:1.5;color:var(--suave);margin:28px 0 28px}
+.acciones{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:center}
+.retrato{position:relative;aspect-ratio:1;border:1px solid var(--linea);overflow:hidden}
+.retrato img,.retrato canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.retrato canvas{image-rendering:pixelated}
+.escena-pix{display:none;width:100vw;margin-left:calc(50% - 50vw);image-rendering:pixelated}
+
+/* Apps y video */
+.apps-grid{display:grid;grid-template-columns:1fr 300px;gap:72px;align-items:start}
+.app{display:grid;grid-template-columns:104px 1fr;gap:24px;align-items:center;padding:22px 0;border-top:1px solid var(--linea-clara)}
+.app:last-child{border-bottom:1px solid var(--linea-clara)}
+.app img{width:104px;height:104px;border-radius:23px;display:block;transition:transform .16s steps(4)}
+.app:hover img{transform:translateY(-6px)}
+.app p{margin:6px 0 6px;color:var(--tinta-suave)}
+.video{border:1px solid var(--tinta);background:#000}
+.video video{display:block;width:100%;height:auto;aspect-ratio:9/16}
+.pie{font-size:1rem;color:var(--tinta-suave);margin:12px 0 0}
+
+/* Cómo trabajo: placas apiladas */
+.proceso{padding:88px 0}
+.linea-paso{list-style:none;margin:0;padding:0;counter-reset:paso}
+.linea-paso li{counter-increment:paso;margin-bottom:28px}
+.linea-paso h3::before{content:counter(paso) ". ";color:var(--amarillo)}
+.linea-paso p{margin:8px 0 0;color:var(--suave)}
+.pila-caja{display:none}
+.firma{margin:28px 0 0;font-weight:700;color:var(--amarillo)}
+.anim .proceso{height:340vh;padding:0}
+.anim .escenario{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding-top:64px}
+.anim .pila-caja{display:flex;justify-content:center;perspective:none}
+.anim .linea-paso{position:relative;min-height:230px}
+.anim .linea-paso li{position:absolute;inset:0 0 auto 0;margin:0;opacity:0;transition:opacity .25s}
+.anim .linea-paso li.activa{opacity:1}
+.anim .linea-paso h3{font-size:clamp(1.875rem,3.2vw,2.75rem);font-weight:700}
+.anim .linea-paso h3::before{content:none}
+.anim .linea-paso p{font-size:1.25rem;line-height:1.5;margin-top:14px}
+.contador{display:none}
+.anim .contador{display:block;color:var(--amarillo);font-weight:700;margin:0 0 10px}
+.pila{position:relative;width:min(330px,62vw);aspect-ratio:1;transform:rotateX(56deg) rotateZ(-45deg);transform-style:preserve-3d;margin-top:56px}
+.placa{position:absolute;inset:0;background:var(--panel);border:2px solid #4a4a55;box-shadow:-7px 7px 0 #000;transform:translateZ(calc(var(--n) * 44px));transition:transform .36s steps(7),background-color .12s steps(2);display:flex;align-items:flex-end;justify-content:flex-end;padding:12px 14px;font:500 1rem/1 "Bricolage Grotesque",sans-serif;color:var(--suave)}
+.placa.activa{background:var(--amarillo);border-color:#000;color:#000;box-shadow:-7px 7px 0 #6e5a22}
+.placa.arriba{transform:translateZ(calc(var(--n) * 44px + 125px))}
+
+/* Servicios */
+.servicio{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;padding:28px 0;border-top:1px solid var(--linea-clara)}
+.servicio:last-child{border-bottom:1px solid var(--linea-clara)}
+.servicio h3{font-size:clamp(1.5rem,2.6vw,2rem)}
+.servicio p{margin:0 0 6px;color:var(--tinta-suave)}
+
+/* Quién soy */
+.intro{display:grid;grid-template-columns:240px 1fr;gap:44px;align-items:center;margin-bottom:56px}
+.intro img{display:block;width:100%;height:auto;border:1px solid var(--linea)}
+.intro p{font-size:1.3125rem;line-height:1.5;margin-bottom:.7em}
+.columnas{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.bloque{margin-bottom:44px}
+.bloque:last-child{margin-bottom:0}
+.bloque h3{color:var(--amarillo);margin-bottom:6px}
+.fila{padding:14px 0;border-top:1px solid var(--linea)}
+.fila strong{display:block}
+.fila p{margin:2px 0 0;color:var(--suave);font-size:1.0625rem}
+.fila .cuando{color:var(--suave);font-size:1rem;display:block}
+.certs{margin:0;padding:0;list-style:none}
+.certs li{padding:9px 0;border-top:1px solid var(--linea);font-size:1.0625rem}
+
+/* Cierre */
+.cierre{background:var(--amarillo);color:#000;padding:88px 0}
+.cierre .ancho{display:grid;grid-template-columns:1fr 300px;gap:64px;align-items:center}
+.cierre h2{font-size:clamp(3rem,8vw,6.5rem);margin-bottom:16px}
+.cierre p{font-size:1.3125rem;line-height:1.45}
+.cierre img{display:block;width:100%;height:auto;border:3px solid #000}
+.cierre .acciones a:not(.boton){font-weight:700}
+footer{padding:28px 0;font-size:1rem;color:var(--suave)}
+
+@media (max-width:820px){
+  section,.cierre{padding:56px 0}
+  .barra-sup a.nav{display:none}
+  .portada{grid-template-columns:1fr;gap:36px;padding:108px 0 48px}
+  .bajada{font-size:1.1875rem}
+  .retrato{max-width:340px}
+  .apps-grid,.columnas,.cierre .ancho{grid-template-columns:1fr;gap:40px}
+  .video{max-width:260px}
+  .app{grid-template-columns:72px 1fr;gap:16px;align-items:start}
+  .app img{width:72px;height:72px;border-radius:16px}
+  .servicio{grid-template-columns:1fr;gap:6px}
+  .intro{grid-template-columns:1fr;gap:20px}
+  .intro img{max-width:220px}
+  .intro p{font-size:1.1875rem}
+  .cierre img{max-width:240px}
+  .anim .proceso{height:320vh;padding:0}
+  .anim .escenario{grid-template-columns:1fr;grid-template-rows:auto auto;gap:44px;align-content:center}
+  .pila{width:min(190px,52vw);margin-top:60px}
+  .placa{transform:translateZ(calc(var(--n) * 28px));font-size:.875rem;padding:8px 10px}
+  .placa.arriba{transform:translateZ(calc(var(--n) * 28px + 92px))}
+  .anim .linea-paso{min-height:190px}
+  .anim .linea-paso p{font-size:1.125rem}
+  .anim .firma{position:absolute;left:16px;bottom:14px;margin:0}
+}
+@media (max-width:820px) and (max-height:720px){.pila{width:150px;margin-top:44px}.anim .linea-paso{min-height:170px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="barra-sup" aria-label="Principal">
+  <div class="ancho">
+    <a class="marca" href="#inicio"><i aria-hidden="true"></i>Claudio Esteffan</a>
+    <a class="nav" href="#apps">Apps</a>
+    <a class="nav" href="#proceso">Cómo trabajo</a>
+    <a class="nav" href="#quien">Quién soy</a>
+    <a class="boton" href="#contacto">Escríbeme</a>
+  </div>
+</nav>
+
+<main>
+<div class="ancho" id="inicio">
+  <header class="portada">
+    <div>
+      <h1>Apps y programas que le quitan trabajo a tu negocio</h1>
+      <p class="bajada">Soy Claudio Esteffan, de Copiapó. Trabajo solo, con agentes de IA que programan lo que yo diseño, así que hablas directamente con quien hace el trabajo. Tomo proyectos part time.</p>
+      <div class="acciones">
+        <a class="boton" href="mailto:claudioesteffan@gmail.com">Escribir a claudioesteffan@gmail.com</a>
+      </div>
+    </div>
+    <div class="retrato" id="retrato">
+      <img src="assets/yo-pixel.jpg" alt="Retrato en pixel art de Claudio Esteffan con el pulgar arriba" width="800" height="800">
+      <canvas aria-hidden="true"></canvas>
+    </div>
+  </header>
+</div>
+
+<canvas class="escena-pix" id="c-escena" role="img" aria-label="Ilustración animada de un taller: una cinta lleva cajas por cinco máquinas, una pantalla muestra código y al final una persona las aprueba."></canvas>
+
+<section class="claro" id="apps" aria-labelledby="t-apps">
+  <div class="ancho">
+    <h2 id="t-apps">Tres apps que ya están en la App Store</h2>
+    <div class="apps-grid">
+      <div>
+        <article class="app">
+          <img src="assets/cotizaya.jpg" alt="" width="104" height="104" loading="lazy">
+          <div><h3>CotizaYa</h3><p>Cotizaciones profesionales desde el celular, listas para WhatsApp.</p><a href="https://apps.apple.com/cl/app/cotizaya-cotizador-y-ventas/id6808301154">Ver CotizaYa en la App Store</a></div>
+        </article>
+        <article class="app">
+          <img src="assets/turnopay.jpg" alt="" width="104" height="104" loading="lazy">
+          <div><h3>TurnoPay</h3><p>Si trabajas por turnos rotativos, calcula tu pago real con horas extra y recargos.</p><a href="https://apps.apple.com/cl/app/turnopay-horas-extras-turnos/id6809845561">Ver TurnoPay en la App Store</a></div>
+        </article>
+        <article class="app">
+          <img src="assets/geomin.jpg" alt="" width="104" height="104" loading="lazy">
+          <div><h3>GeoMin PRO</h3><p>Las concesiones mineras de Chile en el mapa, incluso sin señal en la cordillera.</p><a href="https://apps.apple.com/cl/app/geomin-pro-catastro-minero/id6826039534">Ver GeoMin PRO en la App Store</a></div>
+        </article>
+      </div>
+      <div>
+        <div class="video">
+          <video controls playsinline preload="none" poster="assets/fabrica.jpg" aria-label="Video de 39 segundos donde explico cómo trabajo"><source src="assets/fabrica.mp4" type="video/mp4"></video>
+        </div>
+        <p class="pie">Cómo trabajo, en 39 segundos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proceso" id="proceso" aria-labelledby="t-como">
+  <div class="ancho escenario">
+    <div>
+      <h2 id="t-como">Cómo trabajo</h2>
+      <p class="contador" id="contador" aria-hidden="true">1 de 5</p>
+      <ol class="linea-paso" id="linea">
+        <li><h3>Idea</h3><p>Cada idea parte como una propuesta escrita, con lo que tiene que pasar para darla por terminada.</p></li>
+        <li><h3>Código</h3><p>Un agente de IA programa lo que yo diseño.</p></li>
+        <li><h3>Revisión</h3><p>Otro agente busca errores en ese código. Una vez pilló uno que ya estaba publicado y que, al duplicar una cotización, hacía perder el país. Quedó arreglado.</p></li>
+        <li><h3>Publicación</h3><p>Apple revisa cada versión antes de que llegue a la gente, y más de una vez me la ha devuelto.</p></li>
+        <li><h3>Difusión</h3><p>El mismo sistema arma los videos como el de más arriba.</p></li>
+      </ol>
+      <p class="firma">Y yo apruebo cada paso.</p>
+    </div>
+    <div class="pila-caja" aria-hidden="true">
+      <div class="pila" id="pila">
+        <div class="placa" style="--n:4">Idea</div>
+        <div class="placa" style="--n:3">Código</div>
+        <div class="placa" style="--n:2">Revisión</div>
+        <div class="placa" style="--n:1">Publicación</div>
+        <div class="placa" style="--n:0">Difusión</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="claro" id="ayuda" aria-labelledby="t-ayuda">
+  <div class="ancho">
+    <h2 id="t-ayuda">En qué te puedo ayudar</h2>
+    <div class="servicio">
+      <h3>Apps y programas a tu medida</h3>
+      <p>Si tu equipo lleva algo en papel o por WhatsApp, lo convierto en una app o en un programa chico que resuelva justo eso. No tiene que ser un proyecto grande.</p>
+    </div>
+    <div class="servicio">
+      <h3>Automatizar lo repetitivo</h3>
+      <p>Esa planilla o ese informe que alguien arma a mano todas las semanas, aunque ya sepa de memoria cómo se hace.</p>
+    </div>
+    <div class="servicio">
+      <h3>Informes SIMCE para colegios</h3>
+      <div><p>El análisis de tus ensayos, curso por curso. El primer curso es gratis.</p><a href="simce/">Ver los informes SIMCE</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="quien" aria-labelledby="t-quien">
+  <div class="ancho">
+    <h2 id="t-quien">Quién soy</h2>
+    <div class="intro">
+      <img src="assets/yo.jpg" alt="Claudio Esteffan con el pulgar arriba" width="800" height="800" loading="lazy">
+      <div>
+        <p>Vivo en Copiapó. Llevo más de 12 años en proyectos mineros y evaluación de inversiones. En paralelo me formé como programador.</p>
+        <p>Hoy junto las dos cosas: entiendo cómo funciona un negocio y escribo el software que lo ordena.</p>
+      </div>
+    </div>
+    <div class="columnas">
+      <div>
+        <div class="bloque">
+          <h3>Experiencia</h3>
+          <div class="fila"><span class="cuando">2012 a hoy</span><strong>Director de Estrategia y Desarrollo, Gareste Ltda.</strong><p>Dirijo proyectos mineros y su evaluación económica, con modelos de riesgo Monte Carlo, y digitalicé la gestión interna de la empresa.</p></div>
+          <div class="fila"><span class="cuando">2016</span><strong>Docente, Instituto Profesional IPLACEX</strong><p>Álgebra Lineal y Nivelación de Matemáticas para estudiantes de primer año.</p></div>
+          <div class="fila"><span class="cuando">2011 a 2012</span><strong>Encargado de Marketing, Neumared S.A.</strong><p>Posicionamiento de una distribuidora de neumáticos de presencia nacional.</p></div>
+        </div>
+        <div class="bloque">
+          <h3>Formación</h3>
+          <div class="fila"><span class="cuando">2026</span><strong>Técnico de Nivel Superior en Informática, Distinción Máxima</strong><p>Instituto Profesional IACC</p></div>
+          <div class="fila"><span class="cuando">2016</span><strong>Licenciado en Ciencias de la Administración de Empresas, con Honor</strong><p>Universidad Mayor</p></div>
+        </div>
+        <div class="bloque">
+          <h3>Libros en Kindle</h3>
+          <div class="fila"><a href="https://www.amazon.com/dp/B0HHFZG6FG">Claude AI: El Manual del Profesional</a></div>
+          <div class="fila"><a href="https://www.amazon.com/dp/B0HL45PFS2">Claude AI: The Professional's Handbook</a></div>
+          <div class="fila"><a href="https://www.amazon.com/dp/B0HDMS6R9V">Compost mental</a></div>
+        </div>
+      </div>
+      <div>
+        <div class="bloque">
+          <h3>Otros proyectos</h3>
+          <div class="fila"><strong>Casa Abierta COANIQUEM</strong><p>Plataforma para gestionar solicitudes y alojamiento en centros de rehabilitación.</p></div>
+          <div class="fila"><strong>Atalaya de Gareste</strong><p>Sigue de forma automática los pedimentos y manifestaciones mineras en los documentos judiciales.</p></div>
+          <div class="fila"><strong>ProyectoOT</strong><p>Genera órdenes de trabajo, órdenes de compra y facturas con numeración propia para dos empresas.</p></div>
+          <div class="fila"><strong>BioDesierto</strong><p>Mi proyecto de título: una plataforma para financiar proyectos sustentables de la región, con 336 pruebas automáticas.</p></div>
+          <div class="fila"><strong>Protectores solares naturales</strong><p>Una línea inspirada en la flora del Desierto de Atacama, ya a la venta en un local de Copiapó. También programé el sistema que controla su producción.</p></div>
+        </div>
+        <div class="bloque">
+          <h3>Certificaciones</h3>
+          <ul class="certs">
+            <li>Claude Code in Action, Anthropic (2026)</li>
+            <li>Iniciación al Desarrollo con IA: de 0 a Producción, BIG School (2026)</li>
+            <li>Introduction to Python, Codefinity (2025)</li>
+            <li>Diplomado en Fundamentos de Programación y Bases de Datos, IACC (2024, 400 horas)</li>
+            <li>Diplomado en Programación Avanzada, IACC (2024, 300 horas)</li>
+            <li>Diplomado en Desarrollo Web, IACC (2024, 300 horas)</li>
+            <li>Ultimate Linux (2024)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cierre" id="contacto" aria-labelledby="t-final">
+  <div class="ancho">
+    <div>
+      <h2 id="t-final">Escríbeme</h2>
+      <p>Cuéntame lo que hoy te quita tiempo y te digo si se puede resolver.</p>
+      <div class="acciones">
+        <a class="boton oscuro-btn" href="mailto:claudioesteffan@gmail.com">Escribir a claudioesteffan@gmail.com</a>
+        <a href="https://www.linkedin.com/in/coloro1985">LinkedIn</a>
+        <a href="https://github.com/Coloro1985">GitHub</a>
+        <a href="https://www.tiktok.com/@coloro1985">TikTok @coloro1985</a>
+      </div>
+    </div>
+    <img src="assets/yo-programando.jpg" alt="Ilustración en pixel art de Claudio Esteffan programando en su notebook" width="355" height="354" loading="lazy">
+  </div>
+</section>
+</main>
+
+<footer><div class="ancho">Claudio Esteffan. Esta página también salió de la fábrica.</div></footer>
+
+<script>
+/* La escena: se dibuja en baja resolución y el navegador la agranda sin suavizar */
+(function () {
+  var cv = document.getElementById('c-escena'), ctx = cv.getContext('2d');
+  var quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var H = 136, W, esc, CINTA = 116;
+  var ICONOS = [
+    ['..###..', '.#####.', '.#####.', '.#####.', '..###..', '..###..', '...#...'],
+    ['###....', '.......', '#####..', '.......', '..####.', '.......', '####...'],
+    ['..###..', '.#...#.', '.#...#.', '.#...#.', '..###..', '....##.', '.....##'],
+    ['....#..', '...#...', '.#####.', '#######', '#######', '.#####.', '..#.#..'],
+    ['.#.....', '.###...', '.#####.', '.######', '.#####.', '.###...', '.#.....']
+  ];
+  var COLOR_CAJA = ['#c4c4cc', '#ffd98a', '#78dcaa', '#ff9c8f', '#9ac8ff', '#f5c84c'];
+  function r(c, x, y, w, h) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+  function semilla(n) { var x = Math.sin(n * 91.7) * 43758.5; return x - Math.floor(x); }
+
+  function medir() {
+    var ancho = cv.clientWidth || innerWidth;
+    esc = ancho < 560 ? 2 : (ancho < 1700 ? 3 : 4);
+    W = Math.ceil(ancho / esc);
+    cv.width = W; cv.height = H;
+    cv.style.height = (H * esc) + 'px';
+  }
+
+  function fondo(t) {
+    var x, y, i, chico = W < 260;
+    r('#17171d', 0, 0, W, H);                                         /* pared */
+    for (x = 0; x < W; x += 24) r('#1c1c23', x, 0, 12, 78);
+    r('#2b2b35', 0, 78, W, 3);
+    for (y = 81; y < CINTA; y += 6) for (x = (y - 81) % 12 ? 6 : 0; x < W; x += 12) r('#0f0f13', x, y, 6, 6);   /* piso */
+    for (y = 81; y < CINTA; y += 6) for (x = (y - 81) % 12 ? 0 : 6; x < W; x += 12) r('#24242c', x, y, 6, 6);
+    r('#000000', 0, 0, W, 4); r('#3c3c48', 0, 4, W, 1);               /* cielo raso */
+
+    var vx = 10, vy = 12, vw = chico ? 40 : 66, vh = 50;              /* ventana a la noche */
+    r('#000000', vx - 2, vy - 2, vw + 4, vh + 4);
+    r('#0b0b0f', vx, vy, vw, vh);
+    for (i = 0; i < vw / 3; i++) if ((t + i * 5) % 31 > 3) r(i % 3 ? '#8a8a96' : '#fff6e0', vx + Math.floor(semilla(i) * vw), vy + Math.floor(semilla(i + 40) * 26), 1, 1);
+    var mx = vx + vw - 13, my = vy + 12;
+    for (y = -5; y <= 5; y++) for (x = -5; x <= 5; x++) {             /* luna creciente */
+      if (x * x + y * y <= 25 && (x - 3) * (x - 3) + y * y > 20) r('#fff6e0', mx + x, my + y, 1, 1);
+    }
+    for (x = 0; x < vw; x++) {
+      var h = 36 + Math.round(Math.sin((x + 4) * .13) * 5 + Math.sin(x * .31) * 2);
+      r('#2b2b35', vx + x, vy + h, 1, vh - h);
+    }
+    r('#000000', vx + Math.floor(vw / 2), vy, 2, vh);
+
+    var pw = chico ? 66 : Math.min(150, Math.round(W * .32)), px = chico ? W - pw - 8 : Math.round(W / 2 - pw / 2), py = 12, ph = 50;   /* pantalla grande */
+    r('#000000', px - 3, py - 3, pw + 6, ph + 6);
+    r('#3c3c48', px - 2, py - 2, pw + 4, ph + 4);
+    r('#0a1a14', px, py, pw, ph);
+    var desde = Math.floor(t / 3);
+    for (i = 0; i < 8; i++) {
+      var n = desde + i, sang = Math.floor(semilla(n) * 4) * 4;
+      var largo = 12 + Math.floor(semilla(n + 7) * (pw - 34)), cy = py + 3 + i * 6;
+      r(semilla(n + 3) > .72 ? '#f5c84c' : '#78dcaa', px + 4 + sang, cy, Math.min(largo, pw - 8 - sang), 2);
+    }
+    if (t % 8 < 4) r('#fff6e0', px + 4, py + 3 + 8 * 6 - 3, 4, 2);
+    r('#000000', px + pw / 2 - 4, py + ph + 3, 8, 8);                 /* soporte */
+
+    if (!chico) {                                                     /* servidores y reloj */
+      var sx = W - 88;
+      [sx, sx + 26].forEach(function (rx, a) {
+        r('#000000', rx, 22, 22, 56); r('#2f2f3a', rx + 1, 23, 20, 54);
+        for (var f = 0; f < 6; f++) {
+          r('#0b0b0f', rx + 3, 26 + f * 8, 16, 6);
+          for (var l = 0; l < 3; l++) r((t + f * 3 + l * 5 + a * 2) % (7 + l) < 3 ? '#78dcaa' : '#2f7a5a', rx + 5 + l * 4, 28 + f * 8, 2, 2);
+          if ((t + f) % 23 < 2) r('#ff6a5c', rx + 16, 28 + f * 8, 2, 2);
+        }
+      });
+      var cx = px - 26, cy2 = 26;
+      for (y = -9; y <= 9; y++) for (x = -9; x <= 9; x++) {
+        var d = x * x + y * y; if (d <= 81) r(d > 64 ? '#000000' : '#fff6e0', cx + x, cy2 + y, 1, 1);
+      }
+      var ang = t * .05;
+      for (i = 0; i < 7; i++) r('#c9271f', cx + Math.round(Math.cos(ang) * i), cy2 + Math.round(Math.sin(ang) * i), 1, 1);
+      for (i = 0; i < 5; i++) r('#000000', cx + Math.round(Math.cos(ang / 12 - 1.2) * i), cy2 + Math.round(Math.sin(ang / 12 - 1.2) * i), 1, 1);
+    }
+    /* Reflejo verde de la pantalla sobre el piso */
+    for (y = 83; y < 95; y += 2) for (x = px + 8; x < px + pw - 8; x += 3) if ((x + y) % 5 === 0) r('#3f6e68', x, y, 1, 1);
+  }
+
+  function cinta(t) {
+    r('#08080b', 0, CINTA + 8, W, H - CINTA - 8);
+    r('#4a4a55', 0, CINTA, W, 2);
+    r('#1a1a21', 0, CINTA + 2, W, 5);
+    var d = Math.floor(t) % 6;
+    for (var x = -6 + d; x < W; x += 6) r('#8a8a96', x, CINTA + 3, 2, 3);
+  }
+
+  function maquina(i, cx, activa, t) {
+    var x = Math.round(cx) - 11, y = CINTA - 26 + (activa && t % 2 ? 1 : 0);
+    r('#000000', x - 1, y - 1, 24, 27);
+    r(activa ? '#7f8ea3' : '#46505f', x, y, 22, 26); r(activa ? '#aab8cc' : '#5f6b7d', x, y, 22, 2);
+    r((t + i * 4) % 10 < 5 || activa ? '#ff6a5c' : '#7a2f28', x + 9, y - 3, 4, 2);
+    r('#26262f', x + 4, y + 16, 14, 10);                           /* boca por donde pasa la caja */
+    var col = activa ? '#f5c84c' : '#d6d6de', ic = ICONOS[i];
+    for (var f = 0; f < ic.length; f++) for (var c = 0; c < 7; c++) {
+      if (ic[f][c] === '#') r(i === 3 ? (activa ? '#ff6a5c' : '#d6d6de') : col, x + 7 + c, y + 4 + f, 1, 1);
+    }
+    if (i === 3) r(activa ? '#78dcaa' : '#d6d6de', x + 11, y + 4, 1, 1);
+    if (activa) for (var s = 0; s < 3; s++) r('#fff6e0', x + 2 + (t * (s + 2)) % 18, y - 3 - (t + s) % 5, 1, 1);
+  }
+
+  function persona(x, alegre, t) {
+    var y = CINTA - 18;
+    r('#2b2140', x + 2, y, 6, 3);  r('#2b2140', x + 1, y + 1, 1, 3);  r('#2b2140', x + 8, y + 1, 1, 3);   /* pelo */
+    r('#f2c9a0', x + 2, y + 3, 6, 4);
+    r('#000000', x + 3, y + 4, 1, 1); r('#000000', x + 6, y + 4, 1, 1);
+    r('#2c3e6b', x + 2, y + 7, 6, 6);
+    r('#1b1830', x + 2, y + 13, 2, 5); r('#1b1830', x + 6, y + 13, 2, 5);
+    if (alegre) {
+      r('#2c3e6b', x + 8, y + 3, 2, 5); r('#f2c9a0', x + 8, y + 1, 2, 2);
+      var dy = t % 4 < 2 ? 0 : 1, cx = x + 2, cy = y - 12 + dy;       /* el visto bueno */
+      [[0, 4], [1, 5], [2, 6], [3, 5], [4, 4], [5, 3], [6, 2], [7, 1]].forEach(function (p) { r('#78dcaa', cx + p[0], cy + p[1], 2, 2); });
+    } else {
+      r('#2c3e6b', x + 8, y + 7, 2, 5);
+    }
+    r('#2c3e6b', x, y + 7, 2, 5);
+  }
+
+  function dibujar(t) {
+    fondo(t);
+    var margen = 40, finX = W - 26, sp = (finX - margen - 20) / 4, centros = [], i;
+    for (i = 0; i < 5; i++) centros.push(margen + i * sp);
+    cinta(t);
+    var largo = finX - 4, gap = Math.max(52, sp * .9), n = Math.ceil(largo / gap), alegre = false, activa = [0, 0, 0, 0, 0];
+    for (var k = 0; k < n; k++) {
+      var x = (t * 1.1 + k * gap) % largo;
+      var etapa = centros.filter(function (c) { return x > c; }).length;
+      centros.forEach(function (c, j) { if (Math.abs(x - c) < 11) activa[j] = 1; });
+      if (x > finX - 18) alegre = true;
+      var bx = Math.round(x) - 4, by = CINTA - 8;
+      r('#000000', bx - 1, by - 1, 10, 9);
+      r(COLOR_CAJA[etapa], bx, by, 8, 8);
+      r('#000000', bx + 3, by, 2, 8);
+    }
+    centros.forEach(function (c, j) { maquina(j, c, activa[j], Math.floor(t)); });
+    r('#3c3c48', finX - 3, CINTA - 1, 18, 3);
+    persona(finX, alegre, Math.floor(t));
+  }
+
+  cv.style.display = 'block';
+  medir();
+  var t = 90, visible = true, ultimo = 0;
+  dibujar(t);
+  addEventListener('resize', function () { medir(); dibujar(t); });
+  if (quieto) return;
+  function latido(ahora) {
+    if (!visible) return;
+    if (ahora - ultimo > 83) { ultimo = ahora; t += 1; dibujar(t); }
+    requestAnimationFrame(latido);
+  }
+  new IntersectionObserver(function (e) {
+    var antes = visible; visible = e[0].isIntersecting;
+    if (visible && !antes) requestAnimationFrame(latido);
+  }).observe(cv);
+  requestAnimationFrame(latido);
+})();
+</script>
+
+<script>
+/* Al cargar, el retrato aparece desde píxeles grandes hasta verse completo */
+(function () {
+  var caja = document.getElementById('retrato'), c = caja.querySelector('canvas'), img = caja.querySelector('img');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { c.remove(); return; }
+  var x = c.getContext('2d'), tam = [6, 12, 24, 48, 96, 192], i = 0;
+  function paso() {
+    if (i >= tam.length) { c.remove(); return; }
+    c.width = c.height = tam[i++]; x.imageSmoothingEnabled = true;
+    x.drawImage(img, 0, 0, c.width, c.height);
+    setTimeout(paso, 130);
+  }
+  if (img.complete && img.naturalWidth) paso(); else img.addEventListener('load', paso);
+})();
+
+/* Cómo trabajo: al bajar se levanta una placa por vez */
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.documentElement.classList.add('anim');
+  var sec = document.getElementById('proceso'), items = [].slice.call(document.querySelectorAll('#linea li'));
+  var placas = [].slice.call(document.querySelectorAll('#pila .placa')), cont = document.getElementById('contador'), actual = -1, pendiente = false;
+  function mostrar(n) {
+    if (n === actual) return; actual = n;
+    items.forEach(function (li, i) { li.classList.toggle('activa', i === n); });
+    placas.forEach(function (p, i) { p.classList.toggle('activa', i === n); p.classList.toggle('arriba', i < n); });
+    cont.textContent = (n + 1) + ' de ' + items.length;
+  }
+  function medir() {
+    var r = sec.getBoundingClientRect(), recorrido = r.height - innerHeight;
+    var p = recorrido > 0 ? Math.min(.999, Math.max(0, -r.top / recorrido)) : 0;
+    mostrar(Math.floor(p * items.length));
+  }
+  addEventListener('scroll', function () {
+    if (pendiente) return; pendiente = true;
+    requestAnimationFrame(function () { pendiente = false; medir(); });
+  }, { passive: true });
+  addEventListener('resize', medir);
+  medir();
+})();
+</script>
+</body>
+</html>
